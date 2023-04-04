@@ -125,7 +125,7 @@ public class TrainService {
             String stations[] = train.getRoute().split(",");
             boolean isTrainPassFromStation = false;
             for(int i =0;i<stations.length;i++){
-                if(stations[i].equals(stations)){
+                if(stations[i].equals(station)){
                     isTrainPassFromStation = true;
                     time = i;
                     break;
