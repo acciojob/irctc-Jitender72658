@@ -80,15 +80,16 @@ public class TicketService {
         ticket.setToStation(bookTicketEntryDto.getToStation());
         ticket.setTotalFare(totalFare);
 
-
         train.getBookedTickets().add(ticket);
-        int upadedSeats = train.getNoOfSeats()-bookTicketEntryDto.getNoOfSeats();
-        train.setNoOfSeats(upadedSeats);
+//        int updatedSeats = train.getNoOfSeats()-bookTicketEntryDto.getNoOfSeats();
+//        train.setNoOfSeats(updatedSeats);
         Passenger passenger = passengerRepository.findById(bookTicketEntryDto.getBookingPersonId()).get();
         List<Ticket> tickets = passenger.getBookedTickets();
         tickets.add(ticket);
         passenger.setBookedTickets(tickets);
+
         ticketRepository.save(ticket);
+
 
        return ticket.getTicketId();
 

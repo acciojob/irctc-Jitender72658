@@ -16,22 +16,11 @@ public class TicketController {
     @Autowired
     TicketService ticketService;
 
-//    @PostMapping("/book")
-//    public Integer bookTicket(@RequestBody BookTicketEntryDto bookTicketEntryDto){
-//
-//        try {
-//            Integer ticketId = ticketService.bookTicket(bookTicketEntryDto);
-//            return ticketId;
-//        }catch (Exception e) {
-//            return -98;
-//        }
-//    }
-
     @PostMapping("/book")
     public Integer bookTicket(@RequestBody BookTicketEntryDto bookTicketEntryDto){
 
         try {
-           Integer ticketId = ticketService.bookTicket(bookTicketEntryDto);
+            Integer ticketId = ticketService.bookTicket(bookTicketEntryDto);
             return ticketId;
         }catch (Exception e) {
             return null;

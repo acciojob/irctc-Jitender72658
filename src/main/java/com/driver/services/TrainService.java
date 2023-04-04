@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @Service
@@ -48,14 +49,27 @@ public class TrainService {
 
         //Calculate the total seats available
         //Suppose the route is A B C D
-        //And there are 2 seats avaialble in total in the train
+        //And there are 2 seats available in total in the train
         //and 2 tickets are booked from A to C and B to D.
         //The seat is available only between A to C and A to B. If a seat is empty between 2 station it will be counted to our final ans
         //even if that seat is booked post the destStation or before the boardingStation
-        //Inshort : a train has totalNo of seats and there are tickets from and to different locations
+        //In-short : a train has totalNo of seats and there are tickets from and to different locations
         //We need to find out the available seats between the given 2 stations.
         Train train = trainRepository.findById(seatAvailabilityEntryDto.getTrainId()).get();
-       return train.getNoOfSeats();
+        String stations[] = train.getRoute().split(",");
+        int startingStationNo = Arrays.asList(stations).indexOf(String.valueOf(seatAvailabilityEntryDto.getFromStation()));
+        int endingStationNo =Arrays.asList(stations).indexOf(String.valueOf(seatAvailabilityEntryDto.getFromStation()));
+
+        List<Ticket> tickets = train.getBookedTickets();
+        int seatAlreadyBooked = 0;
+        for(Ticket ticket: tickets){
+            int startingStationIndexOfTicket = Arrays.asList(stations).indexOf(String.valueOf(ticket.getFromStation()));
+            int endingStationIndexOfTicket = Arrays.asList(stations).indexOf(String.valueOf(ticket.getToStation()));
+            if( endingStationIndexOfTicket>startingStationNo || startingStationIndexOfTicket<endingStationNo ){
+                seatAlreadyBooked+=ticket.getPassengersList().size();
+            }
+        }
+       return train.getNoOfSeats()-seatAlreadyBooked;
     }
 
     public Integer calculatePeopleBoardingAtAStation(Integer trainId,Station station) throws Exception{
