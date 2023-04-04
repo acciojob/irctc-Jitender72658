@@ -3,6 +3,7 @@ package com.driver.services;
 
 import com.driver.EntryDto.BookTicketEntryDto;
 import com.driver.model.Passenger;
+import com.driver.model.Station;
 import com.driver.model.Ticket;
 import com.driver.model.Train;
 import com.driver.repository.PassengerRepository;
@@ -41,8 +42,51 @@ public class TicketService {
         //Save the bookedTickets in the train Object
         //Also in the passenger Entity change the attribute bookedTickets by using the attribute bookingPersonId.
        //And the end return the ticketId that has come from db
+        Train train = trainRepository.findById(bookTicketEntryDto.getTrainId()).get();
+        if(train.getNoOfSeats()<bookTicketEntryDto.getNoOfSeats()){
+            throw new Exception("Less tickets are available");
+        }
+        Station fromStation = bookTicketEntryDto.getFromStation();
+        Station toStation = bookTicketEntryDto.getToStation();
+        int startingStationNo = 0;
+        int endingStationNo = 0;
+        boolean isTrainPassStartingStation = false;
+        boolean isTrainPassEndingStation = false;
+        String stations [] = train.getRoute().split(",");
+        for(int i =0;i<stations.length;i++){
+            if(fromStation.equals(stations[i])){
+                isTrainPassStartingStation = true;
+                startingStationNo = i;
+            }
+            if(toStation.equals(stations[i])){
+                isTrainPassStartingStation = true;
+                endingStationNo = i;
+            }
+        }
+        if(!isTrainPassEndingStation || !isTrainPassEndingStation){
+            throw new Exception("Invalid stations");
+        }
+        int totalFare = (endingStationNo-startingStationNo)*300*bookTicketEntryDto.getPassengerIds().size();
 
-       return null;
+        Ticket ticket = new Ticket();
+        List<Integer> passengerIds = bookTicketEntryDto.getPassengerIds();
+        List<Passenger> passengerList = new ArrayList<>();
+        for(Integer passengerId : passengerIds){
+            Passenger passenger = passengerRepository.findById(passengerId).get();
+            passengerList.add(passenger);
+        }
+        ticket.setPassengersList(passengerList);
+        ticket.setTrain(train);
+        ticket.setFromStation(bookTicketEntryDto.getFromStation());
+        ticket.setToStation(bookTicketEntryDto.getToStation());
+        ticket.setTotalFare(totalFare);
+        ticketRepository.save(ticket);
+
+        train.getBookedTickets().add(ticket);
+        Passenger passenger = passengerRepository.findById(bookTicketEntryDto.getBookingPersonId()).get();
+        passenger.getBookedTickets().add(ticket);
+
+       return ticket.getTicketId();
 
     }
 }
