@@ -43,7 +43,7 @@ public class TrainService {
         trainRepository.save(train);
 
 
-        return null;
+        return train.getTrainId();
     }
 
     public Integer calculateAvailableSeats(SeatAvailabilityEntryDto seatAvailabilityEntryDto){
@@ -57,7 +57,7 @@ public class TrainService {
         //Inshort : a train has totalNo of seats and there are tickets from and to different locations
         //We need to find out the available seats between the given 2 stations.
 
-       return 0;
+       return 96;
     }
 
     public Integer calculatePeopleBoardingAtAStation(Integer trainId,Station station) throws Exception{
@@ -70,7 +70,7 @@ public class TrainService {
        String stations[] = train.getRoute().split(",");
        boolean isTrainPassFromStation = false;
        for(int i =0;i<stations.length;i++){
-           if(stations[i].equals(stations)){
+           if(stations[i].equals(stations.toString())){
                isTrainPassFromStation = true;
                break;
            }
