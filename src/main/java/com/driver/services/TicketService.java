@@ -59,7 +59,7 @@ public class TicketService {
                 startingStationNo = i;
             }
             if(toStation.equals(stations[i])){
-                isTrainPassStartingStation = true;
+                isTrainPassEndingStation = true;
                 endingStationNo = i;
             }
         }
@@ -83,6 +83,7 @@ public class TicketService {
         ticketRepository.save(ticket);
 
         train.getBookedTickets().add(ticket);
+        train.setNoOfSeats(train.getNoOfSeats()-bookTicketEntryDto.getNoOfSeats());
         Passenger passenger = passengerRepository.findById(bookTicketEntryDto.getBookingPersonId()).get();
         passenger.getBookedTickets().add(ticket);
 
