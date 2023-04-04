@@ -3,7 +3,6 @@ package com.driver.services;
 
 import com.driver.EntryDto.BookTicketEntryDto;
 import com.driver.model.Passenger;
-import com.driver.model.Station;
 import com.driver.model.Ticket;
 import com.driver.model.Train;
 import com.driver.repository.PassengerRepository;
@@ -46,8 +45,8 @@ public class TicketService {
         if(train.getNoOfSeats()<bookTicketEntryDto.getNoOfSeats()){
             throw new Exception("Less tickets are available");
         }
-        Station fromStation = bookTicketEntryDto.getFromStation();
-        Station toStation = bookTicketEntryDto.getToStation();
+        String fromStation = String.valueOf(bookTicketEntryDto.getFromStation());
+        String toStation = String.valueOf(bookTicketEntryDto.getToStation());
         int startingStationNo = 0;
         int endingStationNo = 0;
         boolean isTrainPassStartingStation = false;
@@ -80,13 +79,16 @@ public class TicketService {
         ticket.setFromStation(bookTicketEntryDto.getFromStation());
         ticket.setToStation(bookTicketEntryDto.getToStation());
         ticket.setTotalFare(totalFare);
-        ticket.setTrain(train);
-        ticketRepository.save(ticket);
+
 
         train.getBookedTickets().add(ticket);
-        train.setNoOfSeats(train.getNoOfSeats()-bookTicketEntryDto.getNoOfSeats());
+        int upadedSeats = train.getNoOfSeats()-bookTicketEntryDto.getNoOfSeats();
+        train.setNoOfSeats(upadedSeats);
         Passenger passenger = passengerRepository.findById(bookTicketEntryDto.getBookingPersonId()).get();
-        passenger.getBookedTickets().add(ticket);
+        List<Ticket> tickets = passenger.getBookedTickets();
+        tickets.add(ticket);
+        passenger.setBookedTickets(tickets);
+        ticketRepository.save(ticket);
 
        return ticket.getTicketId();
 
