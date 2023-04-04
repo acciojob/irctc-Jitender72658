@@ -58,7 +58,7 @@ public class TrainService {
         Train train = trainRepository.findById(seatAvailabilityEntryDto.getTrainId()).get();
         String stations[] = train.getRoute().split(",");
         int startingStationNo = Arrays.asList(stations).indexOf(String.valueOf(seatAvailabilityEntryDto.getFromStation()));
-        int endingStationNo =Arrays.asList(stations).indexOf(String.valueOf(seatAvailabilityEntryDto.getFromStation()));
+        int endingStationNo =Arrays.asList(stations).indexOf(String.valueOf(seatAvailabilityEntryDto.getToStation()));
 
         List<Ticket> tickets = train.getBookedTickets();
         int seatAlreadyBooked = 0;

@@ -2,6 +2,7 @@ package com.driver.services;
 
 
 import com.driver.EntryDto.BookTicketEntryDto;
+import com.driver.EntryDto.SeatAvailabilityEntryDto;
 import com.driver.model.Passenger;
 import com.driver.model.Ticket;
 import com.driver.model.Train;
@@ -26,6 +27,9 @@ public class TicketService {
     @Autowired
     PassengerRepository passengerRepository;
 
+    @Autowired
+    TrainService trainService;
+
 
     public Integer bookTicket(BookTicketEntryDto bookTicketEntryDto)throws Exception{
 
@@ -42,9 +46,13 @@ public class TicketService {
         //Also in the passenger Entity change the attribute bookedTickets by using the attribute bookingPersonId.
        //And the end return the ticketId that has come from db
         Train train = trainRepository.findById(bookTicketEntryDto.getTrainId()).get();
-        if(train.getNoOfSeats()<bookTicketEntryDto.getNoOfSeats()){
-            return null;
-           // throw new Exception("Less tickets are available");
+        SeatAvailabilityEntryDto seatAvailabilityEntryDto = new SeatAvailabilityEntryDto();
+        seatAvailabilityEntryDto.setFromStation(bookTicketEntryDto.getFromStation());
+        seatAvailabilityEntryDto.setToStation(bookTicketEntryDto.getToStation());
+        seatAvailabilityEntryDto.setTrainId(bookTicketEntryDto.getTrainId());
+        int availableSeats = trainService.calculateAvailableSeats(seatAvailabilityEntryDto);
+        if(availableSeats<bookTicketEntryDto.getNoOfSeats()){
+            throw new Exception("Less tickets are available");
         }
         String fromStation = String.valueOf(bookTicketEntryDto.getFromStation());
         String toStation = String.valueOf(bookTicketEntryDto.getToStation());
@@ -64,8 +72,7 @@ public class TicketService {
             }
         }
         if(!isTrainPassEndingStation || !isTrainPassEndingStation){
-          //  throw new Exception("Invalid stations");
-            return null;
+            throw new Exception("Invalid stations");
         }
         int totalFare = (endingStationNo-startingStationNo)*300*bookTicketEntryDto.getPassengerIds().size();
 
