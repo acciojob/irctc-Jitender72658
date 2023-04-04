@@ -80,6 +80,7 @@ public class TicketService {
         ticket.setFromStation(bookTicketEntryDto.getFromStation());
         ticket.setToStation(bookTicketEntryDto.getToStation());
         ticket.setTotalFare(totalFare);
+        ticket.setTrain(train);
         ticketRepository.save(ticket);
 
         train.getBookedTickets().add(ticket);
