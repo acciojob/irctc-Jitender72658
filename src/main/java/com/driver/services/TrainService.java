@@ -41,8 +41,6 @@ public class TrainService {
         train.setNoOfSeats(trainEntryDto.getNoOfSeats());
 
         trainRepository.save(train);
-
-
         return train.getTrainId();
     }
 
@@ -70,7 +68,7 @@ public class TrainService {
        String stations[] = train.getRoute().split(",");
        boolean isTrainPassFromStation = false;
        for(int i =0;i<stations.length;i++){
-           if(stations[i].equals(stations)){
+           if(stations[i].equals(station)){
                isTrainPassFromStation = true;
                break;
            }
