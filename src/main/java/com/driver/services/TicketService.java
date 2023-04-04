@@ -43,7 +43,8 @@ public class TicketService {
        //And the end return the ticketId that has come from db
         Train train = trainRepository.findById(bookTicketEntryDto.getTrainId()).get();
         if(train.getNoOfSeats()<bookTicketEntryDto.getNoOfSeats()){
-            throw new Exception("Less tickets are available");
+            return null;
+           // throw new Exception("Less tickets are available");
         }
         String fromStation = String.valueOf(bookTicketEntryDto.getFromStation());
         String toStation = String.valueOf(bookTicketEntryDto.getToStation());
@@ -63,7 +64,8 @@ public class TicketService {
             }
         }
         if(!isTrainPassEndingStation || !isTrainPassEndingStation){
-            throw new Exception("Invalid stations");
+          //  throw new Exception("Invalid stations");
+            return null;
         }
         int totalFare = (endingStationNo-startingStationNo)*300*bookTicketEntryDto.getPassengerIds().size();
 
